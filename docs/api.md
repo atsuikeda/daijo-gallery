@@ -1,7 +1,6 @@
 # API設計
 
 ## 基本方針
-
 - REST形式
 - JSON形式
 - Base: /api
@@ -9,7 +8,6 @@
 - Auth: JWT
 
 ## ステータスコード
-
 - 200 OK
 - 400 Bad Request
 - 401 Unauthorized
@@ -54,7 +52,7 @@ success Response:
         "水彩",
         "メキシコ",
         "作者お気に入り"
-      ]
+      ],
       "image_url": "/images/works/2.jpg"
     }
   ],
