@@ -27,6 +27,8 @@ Query:
 - page: int
 - limit: int
 - q: string
+- tag: int (optional, multiple allowed)
+  Example: ?tag=1&tag=2
 
 success Response:
 - data[]
@@ -38,12 +40,21 @@ success Response:
       "id": 1,
       "title": "静寂の森",
       "year": 1985,
-      "image_url": "/images/works/1.jpg"
+      "image_url": "/images/works/1.jpg",
+      "tags": [
+        "風景",
+        "油彩"
+      ]
     },
     {
       "id": 2,
       "title": "夕暮れの港",
       "year": 1992,
+      "tags": [
+        "水彩",
+        "メキシコ",
+        "作者お気に入り"
+      ]
       "image_url": "/images/works/2.jpg"
     }
   ],
@@ -64,6 +75,7 @@ Response:
 - title
 - description
 - year
+- tags[]
 - image_url
 ---
 #### Error Responses
@@ -77,6 +89,7 @@ Response:
 
 /api/works?page=-1
 /api/works?limit=1000
+/api/works?page=2&tag="44"
 
 ```json
 {
@@ -92,6 +105,15 @@ Response:
   "message": "limit must be between 1 and 100",
   "code": 400
 }
+```
+
+```json
+{
+  "error": "Bad Request",
+  "message": "tag must be integer",
+  "code": 400
+}
+
 ```
 
 Response 500
