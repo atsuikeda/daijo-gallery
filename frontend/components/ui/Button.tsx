@@ -17,6 +17,7 @@ export const Button = ({href, label, className}:ButtonProps) => {
           transition-colors duration-200
           hover:bg-[var(--color-main-hover)] hover:text-[var(--color-sub)]
           hover:shadow-md
+          relative after:content-['>'] after:ml-2 
           ${className || ""}
         `}
       >

@@ -6,6 +6,7 @@ export default function Header() {
     relative
     pb-1
     transition-colors
+    text-[var(--color-text)]
     hover:text-[var(--color-main)]
 
     after:absolute

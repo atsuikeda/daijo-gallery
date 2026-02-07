@@ -37,10 +37,10 @@ components/
 │   ├ Gallery.tsx   # インタラクション（Client）
 │   └ Modal.tsx     # Client
 ├ ui/
-│   └ Button.tsx
+│   └ Button.tsx    # 表示用(Server)
 └ layout/
-    ├ Header.tsx
-    └ Footer.tsx
+    ├ Header.tsx    #表示用(Server)
+    └ Footer.tsx    #表示用(Server)
 
 lib/
 └ works.ts          # API通信（Server）
