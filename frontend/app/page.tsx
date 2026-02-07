@@ -1,65 +1,87 @@
-import Image from "next/image";
+import { Button } from '@/components/ui/Button'
+import WorksList from '@/components/works/WorkList'
+import Image from 'next/image'
 
 export default function Home() {
+  const subTitleClass = `
+    flex items-center justify-center
+    text-xl md:text-2xl font-semibold tracking-wide
+    text-[var(--color-text)]
+    w-full max-w-2xl mx-auto
+    mt-4
+    before:content-['']
+    before:w-4
+    before:block
+    before:flex-1 before:h-px
+    before:bg-[var(--color-text)]/60
+    before:mr-1 md:before:mr-4
+    after:content-['']
+    after:block
+    after:flex-1 after:h-px
+    after:bg-[var(--color-text)]/60
+    after:ml-3 md:after:ml-4
+  `
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <>
+      <section className="relative h-[70vh] w-full overflow-hidden">
+        {/* 背景画像 */}
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
+          src="/main.png"
+          alt="山田大乗 個展 メインヴィジュアル"
+          fill
+          className="object-cover"
           priority
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+
+        {/* 画像に薄いフィルター */}
+        <div className="absolute inset-0 bg-white/40" />
+
+        {/* タイトルエリア */}
+        <div
+          className="
+            absolute
+            inset-0
+            flex
+            flex-col
+            items-center
+            justify-center
+            text-center
+          "
+        >
+          <h1 className="text-8xl font-medium text-(--color-main) tracking-wide">山田 個展</h1>
+
+          <h2 className={subTitleClass}>人生の証人達</h2>
+          <Button href="/works" label="作品を見る" className="mt-8" />
+        </div>
+      </section>
+
+      <section className="py-24 bg-(--color-bg)">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h1
+            className="
+            flex items-center justify-center
+            text-4xl font-semibold tracking-wide
+            text-(--color-main)
+            mb-12
+            before:content-['']
+            before:flex-1 before:h-0.5
+            before:bg-(--color-main)/50
+            before:mr-6
+            after:content-['']
+            after:flex-1 after:h-0.5
+            after:bg-(--color-main)/50
+            after:ml-6
+            "
+          >
+            代表作品
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <p className="text-(--color-text) font-bold text-2xl ">絵は人生の映し絵</p>
+
+          <div className="mt-8">
+            <WorksList />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      </section>
+    </>
+  )
 }
