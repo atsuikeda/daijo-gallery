@@ -1,14 +1,10 @@
-"use client"
-
 import Link from "next/link"
 
 export default function Header() {
   return (
     <header>
       <nav className="mx-auto max-w-7xl flex items-center justify-end px-10 py-5">
-
         <ul className="flex items-center gap-10 font-medium text-[var(--color-text)]">
-
           {/* 作品一覧 */}
           <li>
             <Link
@@ -60,9 +56,7 @@ export default function Header() {
               作者紹介
             </Link>
           </li>
-
         </ul>
-
       </nav>
     </header>
   )

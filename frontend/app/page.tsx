@@ -1,5 +1,4 @@
 import { Button } from "@/components/Button";
-import Header from "@/components/Header";
 import Image from "next/image";
 
 export default function Home() {
@@ -20,9 +19,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-white/40" />
 
         {/* ヘッダー */}
-        <div className="relative z-1">
-          <Header />
-        </div>
+        
 
         {/* タイトルエリア */}
         <div
