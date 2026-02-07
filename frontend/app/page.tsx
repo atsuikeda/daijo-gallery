@@ -7,10 +7,10 @@ export default function Home() {
     flex items-center justify-center
     text-xl md:text-2xl font-semibold tracking-wide
     text-[var(--color-text)]
-    w-100
+    w-full max-w-2xl mx-auto
     mt-4
     before:content-['']
-    before:h-10
+    before:w-4
     before:block
     before:flex-1 before:h-px
     before:bg-[var(--color-text)]/60
