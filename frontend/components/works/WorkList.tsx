@@ -1,14 +1,5 @@
+import { Work } from '@/types/work'
 import Image from 'next/image'
-
-/**
- * 仮データ（あとでAPIに置き換える）
- */
-type Work = {
-  id: number
-  title: string
-  year: string
-  imageUrl: string
-}
 
 async function getDummyWorks(): Promise<Work[]> {
   return [
