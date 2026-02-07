@@ -6,10 +6,8 @@ type ButtonProps = {
   className?: string
 }
 
-
 export const Button = ({href, label, className}:ButtonProps) => {
   return(
-    <>
       <Link
         href={href}
         className={`
@@ -24,6 +22,5 @@ export const Button = ({href, label, className}:ButtonProps) => {
       >
         {label}
       </Link>
-    </>
     )
   }

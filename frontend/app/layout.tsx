@@ -3,7 +3,7 @@ import { Noto_Serif_JP } from "next/font/google";
 import { Playfair_Display } from "next/font/google";
 
 import "./globals.css";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 
 const notoSerif = Noto_Serif_JP({ variable: "--font-noto-serif", subsets: ["latin"] });
 const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"] });
