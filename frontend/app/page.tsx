@@ -5,22 +5,37 @@ import Image from 'next/image'
 export default function Home() {
   const subTitleClass = `
     flex items-center justify-center
-    text-xl md:text-2xl font-semibold tracking-wide
+    text-lg sm:text-xl md:text-2xl
+    font-semibold tracking-wide
     text-[var(--color-text)]
     w-full max-w-2xl mx-auto
     mt-4
+
     before:content-['']
-    before:w-4
     before:block
-    before:flex-1 before:h-px
+    before:h-px
     before:bg-[var(--color-text)]/60
-    before:mr-1 md:before:mr-4
+
+    before:w-8
+    sm:before:w-16
+    md:before:w-24
+    lg:before:w-32
+
+    before:mr-2 md:before:mr-4
+
     after:content-['']
     after:block
-    after:flex-1 after:h-px
+    after:h-px
     after:bg-[var(--color-text)]/60
-    after:ml-3 md:after:ml-4
+
+    after:w-8
+    sm:after:w-16
+    md:after:w-24
+    lg:after:w-32
+
+    after:ml-2 md:after:ml-4
   `
+
   return (
     <>
       <section className="relative h-[70vh] w-full overflow-hidden">
@@ -48,7 +63,9 @@ export default function Home() {
             text-center
           "
         >
-          <h1 className="text-8xl font-medium text-(--color-main) tracking-wide">山田 個展</h1>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-medium text-(--color-main) tracking-wide">
+            山田 個展
+          </h1>
 
           <h2 className={subTitleClass}>人生の証人達</h2>
           <Button href="/works" label="作品を見る" className="mt-8" />
@@ -78,7 +95,7 @@ export default function Home() {
           <p className="text-(--color-text) font-bold text-2xl ">絵は人生の映し絵</p>
 
           <div className="mt-8">
-            <WorksList />
+            <WorksList featuredOnly={true} />
           </div>
         </div>
       </section>

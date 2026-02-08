@@ -21,8 +21,8 @@ export default function Header() {
   `
   return (
     <header>
-      <nav className="mx-auto max-w-7xl flex items-center justify-end px-10 py-5">
-        <ul className="flex items-center gap-10 font-medium text-(--color-text)">
+      <nav className="mx-auto max-w-7xl flex items-center justify-end px-2 py-5">
+        <ul className="flex flex-col gap-4 text-center sm:flex-row sm:items-center sm:gap-10 font-medium text-(--color-text)">
           {/* 作品一覧 */}
           <li>
             <Link href="/works" className={linkClassName}>
@@ -32,7 +32,7 @@ export default function Header() {
 
           {/* 作者紹介 */}
           <li>
-            <Link href="/introduce" className={linkClassName}>
+            <Link href="/artist" className={linkClassName}>
               作者紹介
             </Link>
           </li>

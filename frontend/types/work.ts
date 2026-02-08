@@ -3,4 +3,5 @@ export type Work = {
   title: string
   year: string
   imageUrl: string
+  tags?: number[]
 }
