@@ -92,6 +92,7 @@ export default async function WorkList({
   const allWorks = await getDummyWorks()
 
   let filteredWorks = allWorks
+  // トップページで表示する代表作は固定で3枚
   if (featuredOnly) {
     filteredWorks = allWorks.filter((work) => work.tags?.includes(1)).slice(0, 3)
   }

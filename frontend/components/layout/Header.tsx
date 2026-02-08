@@ -23,6 +23,12 @@ export default function Header() {
     <header>
       <nav className="mx-auto max-w-7xl flex items-center justify-end px-2 py-5">
         <ul className="flex flex-col gap-4 text-center sm:flex-row sm:items-center sm:gap-10 font-medium text-(--color-text)">
+          {/* トップページ */}
+          <li>
+            <Link href="/" className={linkClassName}>
+              トップ
+            </Link>
+          </li>
           {/* 作品一覧 */}
           <li>
             <Link href="/works" className={linkClassName}>
