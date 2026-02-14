@@ -11,6 +11,7 @@ export type Database = {
           description: string | null
           year: string | null
           img_path: string
+          status: boolean
           created_at: string
           updated_at: string
         }
@@ -20,6 +21,7 @@ export type Database = {
           description?: string | null
           year?: string | null
           image_path: string
+          status: boolean
           created_at?: string
           updated_at?: string
         }
@@ -28,6 +30,7 @@ export type Database = {
           title?: string
           description?: string | null
           year?: string | null
+          status: boolean
           image_path?: string
           created_at?: string
           updated_at?: string

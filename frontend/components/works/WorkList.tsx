@@ -121,7 +121,6 @@ export default async function WorkList({
           md:grid-cols-2 
           lg:grid-cols-3
           xl:grid-cols-3
-          min-h-[1200px]
           gap-5 sm:gap-10 lg:gap-20
         "
         >
@@ -158,7 +157,7 @@ export default async function WorkList({
               </div>
 
               <div className="p-6 text-center">
-                <p className="text-2xl sm:text-2xl font-serif text-(--color-main) leading-tight mb-3">
+                <p className="text-2xl sm:text-2xl font-serif text-(--color-main) leading-[1.2] line-clamp-2 min-h-[3rem] mb-3">
                   {work.title}
                 </p>
                 <p className="text-base sm:text-lg text-(--color-text) opacity-90">{work.year}年</p>
