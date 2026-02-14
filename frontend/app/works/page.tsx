@@ -1,5 +1,8 @@
 // app/works/page.tsx
 import WorkList from '@/components/works/WorkList'
+import { DUMMY_TAGS } from '@/data/tags'
+import TextSearch from '@/components/ui/TextSearch'
+import TagSearch from '@/components/ui/TagSearch'
 
 export default async function Works({
   searchParams,
@@ -9,6 +12,8 @@ export default async function Works({
   // searchParams を await で解決
   const params = await searchParams
   const page = Number(params.page) || 1
+  const query = typeof params.q === 'string' ? params.q : undefined
+  const tagId = Number(params.tag) || undefined
 
   return (
     <>
@@ -21,8 +26,15 @@ export default async function Works({
         </p>
       </section>
 
-      <section className="mt-8 md:mt-12 bg-(--color-bg) pb-16 md:pb-24">
-        <WorkList featuredOnly={false} page={page} perPage={6} />
+      <section className="bg-(--color-bg) pt-8 md:pt-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <TextSearch />
+          <TagSearch tags={DUMMY_TAGS} />
+        </div>
+      </section>
+
+      <section className="bg-(--color-bg) pb-16 md:pb-24">
+        <WorkList featuredOnly={false} page={page} perPage={6} query={query} tagId={tagId} />
       </section>
     </>
   )
