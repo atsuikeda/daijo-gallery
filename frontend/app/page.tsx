@@ -4,6 +4,8 @@ import WorksList from '@/components/works/WorkList'
 import WorkListSkeleton from '@/components/works/WorkListSkeleton'
 import Image from 'next/image'
 
+export const revalidate = 60
+
 export default function Home() {
   const subTitleClass = `
     flex items-center justify-center

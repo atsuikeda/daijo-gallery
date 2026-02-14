@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
         hostname: 'picsum.photos',
       },
     ],
+    minimumCacheTTL: 86400,
   },
 }
 

@@ -3,6 +3,7 @@ import { Work } from '@/types/work'
 import Image from 'next/image'
 import Pagination from '@/components/works/Pagination'
 import { supabase } from '@/lib/superbase'
+import { unstable_cache } from 'next/cache'
 
 interface WorkListProps {
   featuredOnly?: boolean
@@ -28,19 +29,13 @@ type WorkRow = {
   works_tags: { tag_id: number }[]
 }
 
-async function getWorks({
-  featuredOnly,
-  page,
-  perPage,
-  query,
-  tagId,
-}: {
-  featuredOnly: boolean
-  page: number
-  perPage: number
-  query?: string
-  tagId?: number
-}): Promise<{ works: Work[]; totalPages: number }> {
+async function fetchWorks(
+  featuredOnly: boolean,
+  page: number,
+  perPage: number,
+  query?: string,
+  tagId?: number,
+): Promise<{ works: Work[]; totalPages: number }> {
   // タグフィルタ: featuredOnly時は代表作タグ、それ以外はtagIdでフィルタ
   let tagFilterIds: number[] | null = null
   const filterTagId = featuredOnly ? FEATURED_TAG_ID : tagId
@@ -94,6 +89,12 @@ async function getWorks({
   return { works, totalPages }
 }
 
+const getWorks = unstable_cache(
+  fetchWorks,
+  ['works-list'],
+  { revalidate: 60, tags: ['works'] },
+)
+
 export default async function WorkList({
   featuredOnly = false,
   page = 1,
@@ -102,13 +103,13 @@ export default async function WorkList({
   tagId,
 }: WorkListProps) {
   const limit = featuredOnly ? FEATURED_LIMIT : perPage
-  const { works: currentWorks, totalPages } = await getWorks({
+  const { works: currentWorks, totalPages } = await getWorks(
     featuredOnly,
-    page: featuredOnly ? 1 : page,
-    perPage: limit,
+    featuredOnly ? 1 : page,
+    limit,
     query,
     tagId,
-  })
+  )
 
   return (
     <div className="py-12 md:py-16">
