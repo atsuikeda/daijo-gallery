@@ -1,5 +1,6 @@
 'use client'
 
+import { useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Tag } from '@/types/work'
 
@@ -10,6 +11,7 @@ interface TagSearchProps {
 export default function TagSearch({ tags }: TagSearchProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
   const activeTagId = Number(searchParams.get('tag')) || null
 
   const handleTagClick = (tagId: number) => {
@@ -20,15 +22,18 @@ export default function TagSearch({ tags }: TagSearchProps) {
       params.set('tag', tagId.toString())
     }
     params.set('page', '1')
-    router.push(`/works?${params.toString()}`)
+    startTransition(() => {
+      router.replace(`/works?${params.toString()}`)
+    })
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={`flex flex-wrap gap-2 transition-opacity ${isPending ? 'opacity-60' : ''}`}>
       {tags.map((tag) => (
         <button
           key={tag.id}
           onClick={() => handleTagClick(tag.id)}
+          disabled={isPending}
           className={`
             px-4 py-1.5
             rounded-full

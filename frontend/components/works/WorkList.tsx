@@ -49,19 +49,16 @@ async function getWorks({
     tagFilterIds = tagRows?.map((r) => r.work_id) ?? []
   }
 
-  // 件数取得
+  // 件数取得とデータ取得を並列実行
+  const from = (page - 1) * perPage
+  const to = from + perPage - 1
+
   let countQuery = supabase
     .from('works')
     .select('id', { count: 'exact', head: true })
     .eq('status', true)
   if (query) countQuery = countQuery.ilike('title', `%${query}%`)
   if (tagFilterIds !== null) countQuery = countQuery.in('id', tagFilterIds)
-
-  const { count } = await countQuery
-
-  // データ取得（ページネーション込み）
-  const from = (page - 1) * perPage
-  const to = from + perPage - 1
 
   let dataQuery = supabase
     .from('works')
@@ -72,20 +69,25 @@ async function getWorks({
   if (tagFilterIds !== null) dataQuery = dataQuery.in('id', tagFilterIds)
   dataQuery = dataQuery.range(from, to)
 
-  const { data, error } = (await dataQuery) as { data: WorkRow[] | null; error: typeof Error | null }
+  const [countResult, dataResult] = await Promise.all([countQuery, dataQuery])
+  const { count } = countResult
+  const { data, error } = dataResult as unknown as { data: WorkRow[] | null; error: typeof Error | null }
 
   if (error) {
     console.error('Supabase fetch error:', error)
     return { works: [], totalPages: 0 }
   }
 
-  const works = (data ?? []).map((work) => ({
-    id: work.id,
-    title: work.title,
-    year: work.year ?? '',
-    imageUrl: supabase.storage.from('gallery-images').getPublicUrl(work.img_path).data.publicUrl,
-    tags: work.works_tags.map((wt) => wt.tag_id),
-  }))
+  const works = (data ?? []).map((work) => {
+    const baseUrl = supabase.storage.from('gallery-images').getPublicUrl(work.img_path).data.publicUrl
+    return {
+      id: work.id,
+      title: work.title,
+      year: work.year ?? '',
+      imageUrl: `${baseUrl}?width=600&quality=75`,
+      tags: work.works_tags.map((wt) => wt.tag_id),
+    }
+  })
 
   const total = count ?? 0
   const totalPages = Math.ceil(total / perPage)
@@ -121,7 +123,7 @@ export default async function WorkList({
           gap-5 sm:gap-10 lg:gap-20
         "
         >
-          {currentWorks.map((work) => (
+          {currentWorks.map((work, index) => (
             <div
               key={work.id}
               className="
@@ -147,7 +149,7 @@ export default async function WorkList({
                     group-hover:scale-110
                   "
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  priority={work.id <= 5}
+                  priority={index < 3}
                 />
               </div>
 

@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function TextSearch() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [query, setQuery] = useState(searchParams.get('q') ?? '')
+  const [isPending, startTransition] = useTransition()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,7 +18,9 @@ export default function TextSearch() {
       params.delete('q')
     }
     params.set('page', '1')
-    router.push(`/works?${params.toString()}`)
+    startTransition(() => {
+      router.replace(`/works?${params.toString()}`)
+    })
   }
 
   return (
@@ -41,7 +44,8 @@ export default function TextSearch() {
       />
       <button
         type="submit"
-        className="
+        disabled={isPending}
+        className={`
           px-5 py-2.5
           bg-(--color-main) text-white
           rounded-lg
@@ -52,9 +56,10 @@ export default function TextSearch() {
           active:scale-[0.97]
           cursor-pointer
           whitespace-nowrap
-        "
+          ${isPending ? 'opacity-60' : ''}
+        `}
       >
-        検索
+        {isPending ? '検索中...' : '検索'}
       </button>
     </form>
   )
