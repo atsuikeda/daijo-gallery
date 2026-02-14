@@ -23,25 +23,25 @@
 
 ```txt
 app/
-├ layout.tsx        # 全体レイアウト（Server）
-├ page.tsx          # トップページ（Server）
+├ layout.tsx        # 全体レイアウト（Server Component）
+├ page.tsx          # トップページ（Server Component）
 ├ globals.css       # グローバルスタイル
 ├ works/
-│   ├ page.tsx      # 作品一覧（Server）
-│   ├ [id]/page.tsx # 作品詳細（Server）
+│   ├ page.tsx      # 作品一覧（Server Component）
+│   ├ [id]/page.tsx # 作品詳細（Server Component）
 │   ├ loading.tsx
 │   └ error.tsx
 
 components/
 ├ works/
-│   ├ WorkList.tsx  # 表示用（Server）
-│   ├ Gallery.tsx   # インタラクション（Client）
+│   ├ WorkList.tsx  # 表示用（Server Component）
+│   ├ Gallery.tsx   # インタラクション（Client Component）
 │   └ Modal.tsx     # Client
 ├ ui/
-│   └ Button.tsx    # 表示用(Server)
+│   └ Button.tsx    # 表示用 (Server Component)
 └ layout/
-    ├ Header.tsx    # 表示用(Server)
-    └ Footer.tsx    # 表示用(Server)
+    ├ Header.tsx    # 表示用 (Server Component)
+    └ Footer.tsx    # 表示用 (Server Component)
 
 data/
 └ tags.ts           # 共通データ定義
