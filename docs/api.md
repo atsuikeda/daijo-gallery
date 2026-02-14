@@ -193,7 +193,8 @@ if (work?.img_url) {
 
 ### 作品削除
 
-Storage の画像も合わせて削除する。画像パス取得 → Storage 削除 → DB 削除の順で処理する。
+Storage の画像も合わせて削除する。DB 削除を先に行い、成功後に Storage を削除する。
+これにより、DB 削除失敗時に画像だけ消えてしまう不整合を防ぐ。
 
 ```ts
 // 1. 削除対象の作品から画像パスを取得
@@ -203,17 +204,20 @@ const { data: work } = await supabase
   .eq('id', id)
   .single()
 
-// 2. Storage から画像を削除
+// 2. works テーブルから削除（works_tags は CASCADE で自動削除）
+const { error } = await supabase.from('works').delete().eq('id', id)
+
+if (error) {
+  throw new Error('作品の削除に失敗しました')
+}
+
+// 3. DB 削除成功後、Storage から画像を削除
 if (work?.img_url) {
-  // 公開URLからファイルパスを抽出
   const filePath = work.img_url.split('/storage/v1/object/public/works/')[1]
   if (filePath) {
     await supabase.storage.from('works').remove([filePath])
   }
 }
-
-// 3. works テーブルから削除（works_tags は CASCADE で自動削除）
-await supabase.from('works').delete().eq('id', id)
 ```
 
 ---
