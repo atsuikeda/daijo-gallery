@@ -1,5 +1,6 @@
 // app/works/page.tsx
-import WorkList, { DUMMY_TAGS } from '@/components/works/WorkList'
+import WorkList from '@/components/works/WorkList'
+import { DUMMY_TAGS } from '@/data/tags'
 import TextSearch from '@/components/ui/TextSearch'
 import TagSearch from '@/components/ui/TagSearch'
 

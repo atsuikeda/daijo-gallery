@@ -8,7 +8,8 @@ export default function TextSearch() {
   const searchParams = useSearchParams()
   const [query, setQuery] = useState(searchParams.get('q') ?? '')
 
-  const handleSearch = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     const params = new URLSearchParams(searchParams.toString())
     if (query.trim()) {
       params.set('q', query.trim())
@@ -19,19 +20,12 @@ export default function TextSearch() {
     router.push(`/works?${params.toString()}`)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch()
-    }
-  }
-
   return (
-    <div className="flex items-center gap-3">
+    <form onSubmit={handleSubmit} className="flex items-center gap-3">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={handleKeyDown}
         placeholder="作品名で検索"
         className="
           w-full max-w-sm
@@ -46,7 +40,7 @@ export default function TextSearch() {
         "
       />
       <button
-        onClick={handleSearch}
+        type="submit"
         className="
           px-5 py-2.5
           bg-(--color-main) text-white
@@ -62,6 +56,6 @@ export default function TextSearch() {
       >
         検索
       </button>
-    </div>
+    </form>
   )
 }

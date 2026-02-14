@@ -1,5 +1,5 @@
 // components/works/WorkList.tsx
-import { Work, Tag } from '@/types/work'
+import { Work } from '@/types/work'
 import Image from 'next/image'
 import Pagination from '@/components/works/Pagination'
 
@@ -10,15 +10,6 @@ interface WorkListProps {
   query?: string
   tagId?: number
 }
-
-// ダミータグマスタ（本番ではAPIから取得）
-export const DUMMY_TAGS: Tag[] = [
-  { id: 1, name: '代表作' },
-  { id: 2, name: '風景' },
-  { id: 3, name: '人物' },
-  { id: 4, name: '抽象' },
-  { id: 5, name: '静物' },
-]
 
 async function getDummyWorks(): Promise<Work[]> {
   // 本番ではここを fetch に置き換え
@@ -175,22 +166,25 @@ export default async function WorkList({
 }: WorkListProps) {
   const allWorks = await getDummyWorks()
 
-  let filteredWorks = allWorks
-  // トップページで表示する代表作は固定で3枚
+  let filteredWorks: Work[]
+
   if (featuredOnly) {
+    // トップページで表示する代表作は固定で3枚
     filteredWorks = allWorks.filter((work) => work.tags?.includes(1)).slice(0, 3)
-  }
+  } else {
+    filteredWorks = allWorks
 
-  // テキスト検索フィルタ
-  if (query) {
-    filteredWorks = filteredWorks.filter((work) =>
-      work.title.toLowerCase().includes(query.toLowerCase())
-    )
-  }
+    // テキスト検索フィルタ
+    if (query) {
+      filteredWorks = filteredWorks.filter((work) =>
+        work.title.toLowerCase().includes(query.toLowerCase())
+      )
+    }
 
-  // タグフィルタ
-  if (tagId) {
-    filteredWorks = filteredWorks.filter((work) => work.tags?.includes(tagId))
+    // タグフィルタ
+    if (tagId) {
+      filteredWorks = filteredWorks.filter((work) => work.tags?.includes(tagId))
+    }
   }
 
   const total = filteredWorks.length
