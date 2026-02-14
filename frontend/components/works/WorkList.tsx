@@ -2,6 +2,7 @@
 import { Work } from '@/types/work'
 import Image from 'next/image'
 import Pagination from '@/components/works/Pagination'
+import { supabase } from '@/lib/superbase'
 
 interface WorkListProps {
   featuredOnly?: boolean
@@ -11,150 +12,84 @@ interface WorkListProps {
   tagId?: number
 }
 
-async function getDummyWorks(): Promise<Work[]> {
-  // 本番ではここを fetch に置き換え
-  return [
-    {
-      id: 1,
-      title: '封じられた記憶',
-      year: '1980',
-      imageUrl: 'https://picsum.photos/800/1000?random=1',
-      tags: [1, 4],
-    },
-    {
-      id: 2,
-      title: 'デジタル時代の孤独',
-      year: '2010',
-      imageUrl: 'https://picsum.photos/800/1000?random=2',
-      tags: [1, 3],
-    },
-    {
-      id: 3,
-      title: '刹那の輝き',
-      year: '1998',
-      imageUrl: 'https://picsum.photos/800/1000?random=3',
-      tags: [1, 2],
-    },
-    {
-      id: 4,
-      title: '人生の断片',
-      year: '2005',
-      imageUrl: 'https://picsum.photos/800/1000?random=4',
-      tags: [3],
-    },
-    {
-      id: 5,
-      title: '静かな証言',
-      year: '1992',
-      imageUrl: 'https://picsum.photos/800/1000?random=5',
-      tags: [5],
-    },
-    {
-      id: 6,
-      title: '忘却の彼方',
-      year: '2015',
-      imageUrl: 'https://picsum.photos/800/1000?random=6',
-      tags: [2],
-    },
-    {
-      id: 7,
-      title: '響き合う影',
-      year: '1985',
-      imageUrl: 'https://picsum.photos/800/1000?random=7',
-      tags: [4],
-    },
-    {
-      id: 8,
-      title: '永遠の一瞬',
-      year: '2020',
-      imageUrl: 'https://picsum.photos/800/1000?random=8',
-      tags: [2],
-    },
-    {
-      id: 9,
-      title: '記憶の残響',
-      year: '2000',
-      imageUrl: 'https://picsum.photos/800/1000?random=9',
-      tags: [4],
-    },
-    {
-      id: 10,
-      title: '人生の鏡',
-      year: '1975',
-      imageUrl: 'https://picsum.photos/800/1000?random=10',
-      tags: [3],
-    },
-    {
-      id: 11,
-      title: '蒼穹の彼方へ',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=11',
-      tags: [2],
-    },
-    {
-      id: 12,
-      title: '犬は共産党',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=12',
-      tags: [3],
-    },
-    {
-      id: 13,
-      title: '猫は神の子',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=13',
-      tags: [3],
-    },
-    {
-      id: 14,
-      title: '犬殺害現場',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=14',
-      tags: [5],
-    },
-    {
-      id: 15,
-      title: '犬殺害現場2',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=15',
-      tags: [5],
-    },
-    {
-      id: 16,
-      title: '犬殺害現場3',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=16',
-      tags: [4],
-    },
-    {
-      id: 17,
-      title: '犬殺害現場4',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=17',
-      tags: [2],
-    },
-    {
-      id: 18,
-      title: '犬殺害現場5',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=18',
-      tags: [4],
-    },
-    {
-      id: 19,
-      title: '犬殺害現場6',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=19',
-      tags: [3],
-    },
-    {
-      id: 20,
-      title: '犬殺害現場7',
-      year: '2025',
-      imageUrl: 'https://picsum.photos/800/1000?random=20',
-      tags: [5],
-    },
-  ]
+/** 代表作を示すタグID */
+const FEATURED_TAG_ID = 1
+/** トップページに表示する代表作の件数 */
+const FEATURED_LIMIT = 3
+
+type WorkRow = {
+  id: number
+  title: string
+  year: string | null
+  img_path: string
+  works_tags: { tag_id: number }[]
+}
+
+async function getWorks({
+  featuredOnly,
+  page,
+  perPage,
+  query,
+  tagId,
+}: {
+  featuredOnly: boolean
+  page: number
+  perPage: number
+  query?: string
+  tagId?: number
+}): Promise<{ works: Work[]; totalPages: number }> {
+  // タグフィルタ: featuredOnly時は代表作タグ、それ以外はtagIdでフィルタ
+  let tagFilterIds: number[] | null = null
+  const filterTagId = featuredOnly ? FEATURED_TAG_ID : tagId
+  if (filterTagId) {
+    const { data: tagRows } = (await supabase
+      .from('works_tags')
+      .select('work_id')
+      .eq('tag_id', filterTagId)) as { data: { work_id: number }[] | null }
+    tagFilterIds = tagRows?.map((r) => r.work_id) ?? []
+  }
+
+  // 件数取得
+  let countQuery = supabase
+    .from('works')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', true)
+  if (query) countQuery = countQuery.ilike('title', `%${query}%`)
+  if (tagFilterIds !== null) countQuery = countQuery.in('id', tagFilterIds)
+
+  const { count } = await countQuery
+
+  // データ取得（ページネーション込み）
+  const from = (page - 1) * perPage
+  const to = from + perPage - 1
+
+  let dataQuery = supabase
+    .from('works')
+    .select('id, title, year, img_path, works_tags(tag_id)')
+    .eq('status', true)
+    .order('created_at', { ascending: false })
+  if (query) dataQuery = dataQuery.ilike('title', `%${query}%`)
+  if (tagFilterIds !== null) dataQuery = dataQuery.in('id', tagFilterIds)
+  dataQuery = dataQuery.range(from, to)
+
+  const { data, error } = (await dataQuery) as { data: WorkRow[] | null; error: typeof Error | null }
+
+  if (error) {
+    console.error('Supabase fetch error:', error)
+    return { works: [], totalPages: 0 }
+  }
+
+  const works = (data ?? []).map((work) => ({
+    id: work.id,
+    title: work.title,
+    year: work.year ?? '',
+    imageUrl: supabase.storage.from('gallery-images').getPublicUrl(work.img_path).data.publicUrl,
+    tags: work.works_tags.map((wt) => wt.tag_id),
+  }))
+
+  const total = count ?? 0
+  const totalPages = Math.ceil(total / perPage)
+  return { works, totalPages }
 }
 
 export default async function WorkList({
@@ -164,34 +99,14 @@ export default async function WorkList({
   query,
   tagId,
 }: WorkListProps) {
-  const allWorks = await getDummyWorks()
-
-  let filteredWorks: Work[]
-
-  if (featuredOnly) {
-    // トップページで表示する代表作は固定で3枚
-    filteredWorks = allWorks.filter((work) => work.tags?.includes(1)).slice(0, 3)
-  } else {
-    filteredWorks = allWorks
-
-    // テキスト検索フィルタ
-    if (query) {
-      filteredWorks = filteredWorks.filter((work) =>
-        work.title.toLowerCase().includes(query.toLowerCase())
-      )
-    }
-
-    // タグフィルタ
-    if (tagId) {
-      filteredWorks = filteredWorks.filter((work) => work.tags?.includes(tagId))
-    }
-  }
-
-  const total = filteredWorks.length
-  const totalPages = Math.ceil(total / perPage)
-  const start = (page - 1) * perPage
-  const end = start + perPage
-  const currentWorks = filteredWorks.slice(start, end)
+  const limit = featuredOnly ? FEATURED_LIMIT : perPage
+  const { works: currentWorks, totalPages } = await getWorks({
+    featuredOnly,
+    page: featuredOnly ? 1 : page,
+    perPage: limit,
+    query,
+    tagId,
+  })
 
   return (
     <div className="py-12 md:py-16">
