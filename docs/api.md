@@ -17,13 +17,15 @@
 ```ts
 const { data, count } = await supabase
   .from('works')
-  .select('id, title, year, img_url, tags:works_tags(tag:tags(id, tag_name))', { count: 'exact' })
+  .select('id, title, year, img_url, tags:works_tags!inner(tag:tags(id, tag_name))', { count: 'exact' })
   .eq('status', true)
-  .ilike('title', `%${query}%`)       // テキスト検索（任意）
-  .contains('works_tags.tag_id', [tagId]) // タグフィルタ（任意）
+  .ilike('title', `%${query}%`)          // テキスト検索（任意）
+  .eq('works_tags.tag_id', tagId)        // タグフィルタ（任意、!inner で内部結合）
   .range(offset, offset + limit - 1)
   .order('year', { ascending: false })
 ```
+
+※ タグフィルタを使わない場合は `!inner` を外し、`.eq('works_tags.tag_id', tagId)` を省略する。
 
 レスポンス例:
 ```json
@@ -102,19 +104,23 @@ await supabase.auth.signOut()
 
 ```ts
 // 1. 画像を Storage にアップロード
-const { data: file } = await supabase.storage
+const { data: file, error: uploadError } = await supabase.storage
   .from('works')
   .upload(`${fileName}`, imageFile)
 
+if (uploadError || !file) {
+  throw new Error('画像のアップロードに失敗しました')
+}
+
 // 2. 公開URLを取得
-const { data: { publicUrl } } = supabase.storage
+const { data: urlData } = supabase.storage
   .from('works')
   .getPublicUrl(file.path)
 
 // 3. works テーブルに挿入
-const { data } = await supabase
+const { data, error } = await supabase
   .from('works')
-  .insert({ title, description, year, img_url: publicUrl, status: true })
+  .insert({ title, description, year, img_url: urlData.publicUrl, status: true })
   .select()
   .single()
 ```

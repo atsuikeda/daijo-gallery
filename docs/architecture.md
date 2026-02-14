@@ -25,6 +25,7 @@
 app/
 ├ layout.tsx        # 全体レイアウト（Server）
 ├ page.tsx          # トップページ（Server）
+├ globals.css       # グローバルスタイル
 ├ works/
 │   ├ page.tsx      # 作品一覧（Server）
 │   ├ [id]/page.tsx # 作品詳細（Server）
