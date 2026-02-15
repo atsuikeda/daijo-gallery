@@ -1,47 +1,32 @@
 import Link from 'next/link'
 
+const navLinks = [
+  { href: '/', label: 'トップ' },
+  { href: '/works', label: '作品一覧' },
+  { href: '/artist', label: '作者紹介' },
+]
+
 export default function Header() {
-  const linkClassName = `
-    text-2xl
-    relative
-    pb-1
-    transition-colors
-    text-(--color-text)
-    hover:text-[var(--color-main)]
-
-    after:absolute
-    after:left-0
-    after:bottom-0
-    after:h-[1px]
-    after:w-0
-    after:bg-[var(--color-main)]
-    after:transition-all
-    after:duration-300
-    hover:after:w-full
-  `
   return (
-    <header>
-      <nav className="mx-auto max-w-7xl flex items-center justify-end px-2 py-5">
-        <ul className="flex flex-col gap-4 text-center sm:flex-row sm:items-center sm:gap-10 font-medium text-(--color-text)">
-          {/* トップページ */}
-          <li>
-            <Link href="/" className={linkClassName}>
-              トップ
-            </Link>
-          </li>
-          {/* 作品一覧 */}
-          <li>
-            <Link href="/works" className={linkClassName}>
-              作品一覧
-            </Link>
-          </li>
-
-          {/* 作者紹介 */}
-          <li>
-            <Link href="/artist" className={linkClassName}>
-              作者紹介
-            </Link>
-          </li>
+    <header className="sticky top-0 z-50 bg-(--color-bg)/80 backdrop-blur-md border-b border-(--color-main)/5">
+      <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 sm:px-6 h-14">
+        <Link
+          href="/"
+          className="text-lg tracking-widest font-medium text-(--color-main) hover:opacity-70 transition-opacity"
+        >
+          山田 画集
+        </Link>
+        <ul className="flex items-center gap-6 sm:gap-8">
+          {navLinks.map(({ href, label }) => (
+            <li key={href}>
+              <Link
+                href={href}
+                className="text-sm tracking-wide text-(--color-text)/70 hover:text-(--color-main) transition-colors duration-200"
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </header>

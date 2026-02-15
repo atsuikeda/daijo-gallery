@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Noto_Serif_JP } from 'next/font/google'
+import { Noto_Serif_JP, Playfair_Display } from 'next/font/google'
 
 import './globals.css'
 import Header from '@/components/layout/Header'
@@ -8,9 +8,14 @@ import Footer from '@/components/layout/Footer'
 const notoSerif = Noto_Serif_JP({
   variable: '--font-noto-serif',
   subsets: ['latin'],
-  display: 'optional',
+  display: 'swap',
   preload: true,
-  adjustFontFallback: true,
+})
+
+const playfair = Playfair_Display({
+  variable: '--font-playfair',
+  subsets: ['latin'],
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -25,11 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={`${notoSerif.variable} antialiased`}>
-        <div className="absolute top-0 left-0 w-full z-20">
-          <Header />
-        </div>
-        {children}
+      <body className={`${notoSerif.variable} ${playfair.variable} antialiased`}>
+        <Header />
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

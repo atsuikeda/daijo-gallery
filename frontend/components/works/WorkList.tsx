@@ -1,23 +1,17 @@
-// components/works/WorkList.tsx
 import { Work } from '@/types/work'
 import Image from 'next/image'
+import Link from 'next/link'
 import Pagination from '@/components/works/Pagination'
 import { supabase } from '@/lib/superbase'
 import { unstable_cache } from 'next/cache'
 
 interface WorkListProps {
-  featuredOnly?: boolean
   page?: number
   perPage?: number
   query?: string
   tagId?: number
 }
 
-/** 代表作を示すタグID */
-const FEATURED_TAG_ID = 1
-/** トップページに表示する代表作の件数 */
-const FEATURED_LIMIT = 3
-/** 画像読み込み中のぼかしプレースホルダー (薄グレー 1x1 pixel) */
 const BLUR_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8+P9/PQAJkQN/pOHJxAAAAABJRU5ErkJggg=='
 
@@ -30,24 +24,20 @@ type WorkRow = {
 }
 
 async function fetchWorks(
-  featuredOnly: boolean,
   page: number,
   perPage: number,
   query?: string,
   tagId?: number,
 ): Promise<{ works: Work[]; totalPages: number }> {
-  // タグフィルタ: featuredOnly時は代表作タグ、それ以外はtagIdでフィルタ
   let tagFilterIds: number[] | null = null
-  const filterTagId = featuredOnly ? FEATURED_TAG_ID : tagId
-  if (filterTagId) {
+  if (tagId) {
     const { data: tagRows } = (await supabase
       .from('works_tags')
       .select('work_id')
-      .eq('tag_id', filterTagId)) as { data: { work_id: number }[] | null }
+      .eq('tag_id', tagId)) as { data: { work_id: number }[] | null }
     tagFilterIds = tagRows?.map((r) => r.work_id) ?? []
   }
 
-  // 件数取得とデータ取得を並列実行
   const from = (page - 1) * perPage
   const to = from + perPage - 1
 
@@ -69,7 +59,10 @@ async function fetchWorks(
 
   const [countResult, dataResult] = await Promise.all([countQuery, dataQuery])
   const { count } = countResult
-  const { data, error } = dataResult as unknown as { data: WorkRow[] | null; error: typeof Error | null }
+  const { data, error } = dataResult as unknown as {
+    data: WorkRow[] | null
+    error: typeof Error | null
+  }
 
   if (error) {
     console.error('Supabase fetch error:', error)
@@ -85,97 +78,58 @@ async function fetchWorks(
   }))
 
   const total = count ?? 0
-  const totalPages = Math.ceil(total / perPage)
-  return { works, totalPages }
+  return { works, totalPages: Math.ceil(total / perPage) }
 }
 
-const getWorks = unstable_cache(
-  fetchWorks,
-  ['works-list'],
-  { revalidate: 60, tags: ['works'] },
-)
+const getWorks = unstable_cache(fetchWorks, ['works-list'], {
+  revalidate: 60,
+  tags: ['works'],
+})
 
 export default async function WorkList({
-  featuredOnly = false,
   page = 1,
-  perPage = 5,
+  perPage = 6,
   query,
   tagId,
 }: WorkListProps) {
-  const limit = featuredOnly ? FEATURED_LIMIT : perPage
-  const { works: currentWorks, totalPages } = await getWorks(
-    featuredOnly,
-    featuredOnly ? 1 : page,
-    limit,
-    query,
-    tagId,
-  )
+  const { works, totalPages } = await getWorks(page, perPage, query, tagId)
 
   return (
-    <div className="py-12 md:py-16 min-h-[800px]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-        <div
-          className="
-          grid 
-          grid-cols-1 
-          md:grid-cols-2 
-          lg:grid-cols-3
-          xl:grid-cols-3
-          gap-5 sm:gap-10 lg:gap-20
-        "
-        >
-          {currentWorks.map((work, index) => (
-            <div
-              key={work.id}
-              className="
-                group
-                overflow-hidden
-                rounded-xl
-                shadow-lg
-                bg-white
-                transition-all duration-300
-                hover:shadow-2xl
-                hover:-translate-y-2
-                cursor-pointer
-                min-h-[400px]
-              "
-            >
-              <div className="relative aspect-4/5 overflow-hidden bg-gray-100">
-                <Image
-                  src={work.imageUrl}
-                  alt={work.title}
-                  fill
-                  className="
-                    object-cover
-                    transition-transform duration-700 ease-out
-                    group-hover:scale-110
-                  "
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  priority={index < 3}
-                  placeholder="blur"
-                  blurDataURL={BLUR_DATA_URL}
-                />
-              </div>
-
-              <div className="p-6 text-center">
-                <p className="text-2xl sm:text-2xl font-serif text-(--color-main) leading-[1.2] line-clamp-2 min-h-[3rem] mb-3">
-                  {work.title}
-                </p>
-                <p className="text-base sm:text-lg text-(--color-text) opacity-90">{work.year}年</p>
-              </div>
+    <>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {works.map((work, index) => (
+          <Link
+            key={work.id}
+            href={`/works/${work.id}`}
+            className="group block"
+          >
+            <div className="relative aspect-4/5 overflow-hidden bg-(--color-sub)">
+              <Image
+                src={work.imageUrl}
+                alt={work.title}
+                fill
+                className="object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
+                sizes="(max-width: 1024px) 50vw, 33vw"
+                priority={index < 3}
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
+              />
             </div>
-          ))}
-        </div>
-
-        {/* ページネーション：スペースを常に確保してCLSを防止 */}
-        {!featuredOnly && (
-          <div className="min-h-20">
-            {totalPages > 1 && (
-              <Pagination currentPage={page} totalPages={totalPages} />
-            )}
-          </div>
-        )}
+            <div className="mt-2">
+              <p className="text-sm font-medium text-(--color-main) leading-snug line-clamp-2">
+                {work.title}
+              </p>
+              {work.year && (
+                <p className="mt-0.5 text-xs text-(--color-text)/40">{work.year}</p>
+              )}
+            </div>
+          </Link>
+        ))}
       </div>
-    </div>
+
+      {totalPages > 1 && (
+        <Pagination currentPage={page} totalPages={totalPages} />
+      )}
+    </>
   )
 }

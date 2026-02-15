@@ -24,40 +24,18 @@ export default function TextSearch() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-3">
+    <form onSubmit={handleSubmit} className="flex items-center gap-2">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="作品名で検索"
-        className="
-          w-full max-w-sm
-          px-4 py-2.5
-          border border-gray-300
-          rounded-lg
-          bg-white
-          text-(--color-text)
-          placeholder:text-gray-400
-          focus:outline-none focus:ring-2 focus:ring-(--color-accent)/40 focus:border-(--color-accent)
-          transition
-        "
+        className="w-full max-w-xs px-3 py-2 text-sm border border-(--color-main)/15 rounded-(--btn-radius) bg-white text-(--color-text) placeholder:text-(--color-text)/30 focus:outline-none focus:ring-2 focus:ring-(--color-accent)/30 focus:border-(--color-accent) transition"
       />
       <button
         type="submit"
         disabled={isPending}
-        className={`
-          px-5 py-2.5
-          bg-(--color-main) text-white
-          rounded-lg
-          font-medium
-          transition-all duration-200
-          hover:bg-(--color-main-hover)
-          hover:shadow-md
-          active:scale-[0.97]
-          cursor-pointer
-          whitespace-nowrap
-          ${isPending ? 'opacity-60' : ''}
-        `}
+        className="shrink-0 px-4 py-2 text-sm bg-(--color-main) text-white rounded-(--btn-radius) hover:bg-(--color-main-hover) active:scale-[0.97] transition-all cursor-pointer disabled:opacity-50"
       >
         {isPending ? '検索中...' : '検索'}
       </button>

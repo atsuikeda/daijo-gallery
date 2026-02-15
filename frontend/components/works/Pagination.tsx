@@ -1,4 +1,3 @@
-// components/works/Pagination.tsx
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -19,40 +18,24 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
   }
 
   return (
-    <div className="mt-12 md:mt-16 flex justify-center items-center gap-4">
+    <nav className="mt-10 flex items-center justify-center gap-6" aria-label="ページナビゲーション">
       <button
         disabled={currentPage <= 1}
         onClick={() => router.push(createPageURL(currentPage - 1))}
-        className={`
-          px-6 py-3 rounded-lg font-medium transition cursor-pointer
-          ${
-            currentPage <= 1
-              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              : 'bg-(--color-accent) text-white hover:bg-opacity-90'
-          }
-        `}
+        className="px-4 py-2 text-sm rounded-(--btn-radius) transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-(--color-sub) text-(--color-main) hover:bg-(--color-main) hover:text-white"
       >
         前へ
       </button>
-
-      <span className="text-lg font-medium px-4">
+      <span className="text-sm tabular-nums text-(--color-text)/60">
         {currentPage} / {totalPages}
       </span>
-
       <button
         disabled={currentPage >= totalPages}
         onClick={() => router.push(createPageURL(currentPage + 1))}
-        className={`
-          px-6 py-3 rounded-lg font-medium transition cursor-pointer
-          ${
-            currentPage >= totalPages
-              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              : 'bg-(--color-accent) text-white hover:bg-opacity-90'
-          }
-        `}
+        className="px-4 py-2 text-sm rounded-(--btn-radius) transition-colors duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-(--color-sub) text-(--color-main) hover:bg-(--color-main) hover:text-white"
       >
         次へ
       </button>
-    </div>
+    </nav>
   )
 }

@@ -28,25 +28,17 @@ export default function TagSearch({ tags }: TagSearchProps) {
   }
 
   return (
-    <div className={`flex flex-wrap gap-2 transition-opacity ${isPending ? 'opacity-60' : ''}`}>
+    <div className={`flex flex-wrap gap-2 transition-opacity ${isPending ? 'opacity-50' : ''}`}>
       {tags.map((tag) => (
         <button
           key={tag.id}
           onClick={() => handleTagClick(tag.id)}
           disabled={isPending}
-          className={`
-            px-4 py-1.5
-            rounded-full
-            text-sm font-medium
-            border
-            transition-all duration-200
-            cursor-pointer
-            ${
-              activeTagId === tag.id
-                ? 'bg-(--color-main) text-white border-(--color-main)'
-                : 'bg-white text-(--color-text) border-gray-300 hover:border-(--color-main) hover:text-(--color-main)'
-            }
-          `}
+          className={`px-3 py-1 text-xs rounded-full border transition-colors cursor-pointer ${
+            activeTagId === tag.id
+              ? 'bg-(--color-main) text-white border-(--color-main)'
+              : 'bg-white text-(--color-text)/60 border-(--color-main)/15 hover:border-(--color-main) hover:text-(--color-main)'
+          }`}
         >
           {tag.name}
         </button>

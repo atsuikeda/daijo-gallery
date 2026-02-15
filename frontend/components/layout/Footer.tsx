@@ -1,16 +1,42 @@
-import { Button } from '@/components/ui/Button'
+import Link from 'next/link'
+
+const navLinks = [
+  { href: '/', label: 'トップ' },
+  { href: '/works', label: '作品一覧' },
+  { href: '/artist', label: '作者紹介' },
+]
 
 export default function Footer() {
   return (
-    <footer className="bg-(--color-sub) text-(--color-text)">
-      <div className="max-w-4xl mx-auto px-6 py-16 text-center">
-        <div className="flex justify-center gap-8 mb-10">
-          <Button href="/" label="トップへ" />
-          <Button href="/works" label="作品一覧" />
-          <Button href="/artist" label="作者紹介" />
+    <footer className="border-t border-(--color-main)/10 bg-(--color-sub)">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-12">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-8">
+          <div>
+            <p className="text-base font-medium tracking-widest text-(--color-main)">
+              山田 画集
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-(--color-text)/40">
+              70歳画家 山田大乗による芸術作品集
+            </p>
+          </div>
+          <nav>
+            <ul className="flex gap-6">
+              {navLinks.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-xs text-(--color-text)/50 hover:text-(--color-main) transition-colors"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
-        <p className="text-lg font-semibold text-(--color-main)">山田 画集</p>
-        <p className="mt-2 text-xs opacity-60">© 2026 Yamada Exhibition</p>
+        <p className="mt-8 text-xs text-(--color-text)/30">
+          &copy; 2026 Yamada Exhibition
+        </p>
       </div>
     </footer>
   )
