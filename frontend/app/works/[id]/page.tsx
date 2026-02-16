@@ -6,6 +6,7 @@ import { supabase } from '@/lib/superbase'
 import { WorkDetail, RelatedWork } from '@/types/work'
 import { BLUR_DATA_URL, STORAGE_BUCKET, FALLBACK_IMAGE } from '@/lib/constants'
 import type { Metadata } from 'next'
+import type { PostgrestError } from '@supabase/postgrest-js'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -26,7 +27,7 @@ type WorkDetailRow = {
 }
 
 async function fetchWorkDetail(workId: string): Promise<WorkDetail | null> {
-  const { data: workData, error} = (await supabase
+  const { data: workData, error } = (await supabase
     .from('works')
     .select(
       `
@@ -45,7 +46,7 @@ async function fetchWorkDetail(workId: string): Promise<WorkDetail | null> {
     )
     .eq('id', workId)
     .eq('status', true)
-    .single()) as { data: WorkDetailRow | null; error: any }
+    .single()) as { data: WorkDetailRow | null; error: PostgrestError | null }
 
   if (error || !workData) {
     console.error('Work fetch error:', error)
@@ -101,7 +102,7 @@ async function fetchRelatedWorks(
     .from('works_tags')
     .select('work_id')
     .in('tag_id', tagIds)
-    .neq('work_id', workId)) as { data: WorkTagRow[] | null; error: any }
+    .neq('work_id', workId)) as { data: WorkTagRow[] | null; error: PostgrestError | null }
 
   if (relatedIdsError) {
     console.error('Related work IDs fetch error:', relatedIdsError)
@@ -126,7 +127,7 @@ async function fetchRelatedWorks(
     .select('id, title, img_path')
     .eq('status', true)
     .in('id', uniqueIds)
-    .limit(4)) as { data: RelatedWorkRow[] | null; error: any }
+    .limit(4)) as { data: RelatedWorkRow[] | null; error: PostgrestError | null }
 
   if (error || !works) return []
 
