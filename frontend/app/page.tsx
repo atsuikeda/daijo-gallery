@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import FeaturedGallery from '@/components/works/FeaturedGallery'
 import FeaturedGallerySkeleton from '@/components/works/FeaturedGallerySkeleton'
+// ヒーロー画像: JPG形式（PNG比80%軽量化、488KB）
 import heroImage from '@/public/main.jpg'
 
 export const revalidate = 60
