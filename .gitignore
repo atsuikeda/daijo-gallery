@@ -20,3 +20,6 @@ docker-data/
 .vscode/
 .idea/
 .DS_Store
+
+# ===== Backup files =====
+*.backup
