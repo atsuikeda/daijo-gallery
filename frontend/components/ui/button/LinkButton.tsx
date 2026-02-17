@@ -1,13 +1,13 @@
 import Link from 'next/link'
 
-type ButtonProps = {
+type LinkButtonProps = {
   href: string
   label: string
   className?: string
 }
 
-export const Button = ({ href, label, className }: ButtonProps) => {
-  const ButtonClass = `
+export const LinkButton = ({ href, label, className }: LinkButtonProps) => {
+  const buttonClass = `
     inline-flex items-center justify-center
     w-[90%] max-w-sm
     py-3 px-4
@@ -28,7 +28,7 @@ export const Button = ({ href, label, className }: ButtonProps) => {
     ${className ?? ''}
   `
   return (
-    <Link href={href} className={ButtonClass}>
+    <Link href={href} className={buttonClass}>
       {label}
     </Link>
   )

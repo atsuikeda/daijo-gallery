@@ -12,6 +12,9 @@
 - [supabase-type-assertion.md](supabase-type-assertion.md) - Supabase型アサーションの共通化
 - [type-refactoring.md](type-refactoring.md) - ジェネリック型による型定義の共通化（2026-02-17）
 
+### 設計・コンポーネント
+- [component-splitting-2026-02-18.md](component-splitting-2026-02-18.md) - コンポーネント分割の基準 / disabled状態の視覚フィードバック（2026-02-18）
+
 ## レビュー観点
 
 コードレビューは以下の4つの観点で実施しています：
