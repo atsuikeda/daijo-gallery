@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { LinkButton } from '@/components/ui/button/LinkButton'
 import FeaturedGallery from '@/components/works/FeaturedGallery'
 import FeaturedGallerySkeleton from '@/components/works/FeaturedGallerySkeleton'
 // ヒーロー画像: JPG形式（PNG比80%軽量化、488KB）
@@ -30,12 +31,7 @@ export default function Home() {
           <p className="mt-3 text-base sm:text-lg md:text-xl tracking-widest text-white/80">
             人生の証跡
           </p>
-          <Link
-            href="/works"
-            className="mt-8 px-8 py-3 text-sm bg-(--color-main) text-white rounded-(--btn-radius) hover:bg-(--color-main-hover) hover:shadow-md active:scale-[0.97] transition-all duration-200"
-          >
-            作品を見る
-          </Link>
+          <LinkButton href="/works" label="作品を見る" className="mt-8" />
         </div>
       </section>
 

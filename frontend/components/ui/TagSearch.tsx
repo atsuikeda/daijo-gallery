@@ -3,6 +3,7 @@
 import { useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Tag } from '@/types/work'
+import TagButton from '@/components/ui/button/TagButton'
 
 interface TagSearchProps {
   tags: Tag[]
@@ -30,18 +31,13 @@ export default function TagSearch({ tags }: TagSearchProps) {
   return (
     <div className={`flex flex-wrap gap-2 transition-opacity ${isPending ? 'opacity-50' : ''}`}>
       {tags.map((tag) => (
-        <button
+        <TagButton
           key={tag.id}
+          label={tag.name}
+          isActive={activeTagId === tag.id}
+          isPending={isPending}
           onClick={() => handleTagClick(tag.id)}
-          disabled={isPending}
-          className={`px-3 py-1 text-xs rounded-full border transition-colors cursor-pointer ${
-            activeTagId === tag.id
-              ? 'bg-(--color-main) text-white border-(--color-main)'
-              : 'bg-white text-(--color-text)/60 border-(--color-main)/15 hover:border-(--color-main) hover:text-(--color-main)'
-          }`}
-        >
-          {tag.name}
-        </button>
+        />
       ))}
     </div>
   )

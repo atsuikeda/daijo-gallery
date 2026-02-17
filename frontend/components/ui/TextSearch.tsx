@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import SubmitButton from '@/components/ui/button/SubmitButton'
 
 export default function TextSearch() {
   const router = useRouter()
@@ -32,13 +33,7 @@ export default function TextSearch() {
         placeholder="作品名で検索"
         className="w-full max-w-xs px-3 py-2 text-sm border border-(--color-main)/15 rounded-(--btn-radius) bg-white text-(--color-text) placeholder:text-(--color-text)/30 focus:outline-none focus:ring-2 focus:ring-(--color-accent)/30 focus:border-(--color-accent) transition"
       />
-      <button
-        type="submit"
-        disabled={isPending}
-        className="shrink-0 px-4 py-2 text-sm bg-(--color-main) text-white rounded-(--btn-radius) hover:bg-(--color-main-hover) active:scale-[0.97] transition-all cursor-pointer disabled:opacity-50"
-      >
-        {isPending ? '検索中...' : '検索'}
-      </button>
+      <SubmitButton isPending={isPending} label="検索" pendingLabel="検索中..." />
     </form>
   )
 }
