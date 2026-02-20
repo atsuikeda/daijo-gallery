@@ -17,7 +17,7 @@ type WorkDetailRow = {
   id: number
   title: string
   description: string | null
-  year: string | null
+  year: number | null
   img_path: string
   works_tags: {
     tags: {
@@ -28,6 +28,13 @@ type WorkDetailRow = {
 }
 
 async function fetchWorkDetail(workId: string): Promise<WorkDetail | null> {
+
+  // URLパラメータworkIdは文字列なので数値型に変換
+  const workIdNumber = Number(workId)
+  if (isNaN(workIdNumber)) {
+    return null
+  }
+
   const { data: workData, error } = (await supabase
     .from('works')
     .select(
@@ -45,7 +52,7 @@ async function fetchWorkDetail(workId: string): Promise<WorkDetail | null> {
       )
     `,
     )
-    .eq('id', workId)
+    .eq('id', workIdNumber)
     .eq('status', true)
     .single())
 
@@ -68,7 +75,7 @@ async function fetchWorkDetail(workId: string): Promise<WorkDetail | null> {
     id: workData.id,
     title: workData.title,
     description: workData.description,
-    year: workData.year ?? '',
+    year: workData.year || null,
     imageUrl,
     blurDataURL,
     tags,
